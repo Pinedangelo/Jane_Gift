@@ -9,7 +9,7 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     
     <style>
         body {
@@ -347,6 +347,21 @@
             border-radius: 1rem;
         }
 
+        /* Signature Reveal Styles - ADDED THIS */
+        .signature-reveal {
+            font-family: 'Dancing Script', cursive;
+            background: linear-gradient(45deg, #e11d48, #be185d);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .signature-visible {
+            transform: scale(1.2);
+        }
+
     </style>
 </head>
 <body class="flex items-center justify-center relative select-none">
@@ -479,15 +494,21 @@
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <button class="bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mx-auto w-full group active:scale-95">
+                    <!-- Interactive Redeem Section - UPDATED THIS -->
+                    <div class="mt-6 relative h-12 flex items-center justify-center">
+                        <button id="redeem-btn" onclick="redeemGift()" class="absolute z-10 bg-gray-900 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-all duration-500 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 w-full group active:scale-95">
                             <span>Redeem Gift</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                             </svg>
                         </button>
-                        <p class="text-[10px] text-gray-400 mt-2">*Valid for one-time use only. Terms apply.</p>
+
+                        <!-- The Hidden Signature -->
+                        <div id="signature-container" class="absolute opacity-0 pointer-events-none transition-all duration-700 flex items-center justify-center w-full">
+                            <p class="signature-reveal text-2xl md:text-3xl">From Yours Truly ❤️</p>
+                        </div>
                     </div>
+                    <p class="text-[10px] text-gray-400 mt-2">*Valid for one-time use only. Terms apply.</p>
                 </div>
             </div>
         </div>
@@ -651,7 +672,33 @@
             }, 500);
         }
 
-        // --- 5. 3D Tilt Effect for Voucher (Mouse + Touch) ---
+        // --- 5. Redeem Button Logic - ADDED THIS ---
+        function redeemGift() {
+            const btn = document.getElementById('redeem-btn');
+            const sigContainer = document.getElementById('signature-container');
+            const signature = sigContainer.querySelector('.signature-reveal');
+
+            // Fade out button
+            btn.style.opacity = '0';
+            btn.style.transform = 'scale(0.8)';
+            btn.style.pointerEvents = 'none';
+
+            // Show signature
+            setTimeout(() => {
+                sigContainer.style.opacity = '1';
+                signature.classList.add('signature-visible');
+                
+                // Little heart confetti burst specifically for the signature
+                confetti({
+                    particleCount: 40,
+                    spread: 40,
+                    origin: { y: 0.7 },
+                    colors: ['#e11d48', '#be185d']
+                });
+            }, 300);
+        }
+
+        // --- 6. 3D Tilt Effect for Voucher (Mouse + Touch) ---
         const tiltElement = document.getElementById('tilt-element');
         const voucherDisplay = document.getElementById('voucher-display');
 
